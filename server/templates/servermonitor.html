@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Server`s monitor</title>
+    <style>
+      #chartContainer {
+          width: 40vw;
+          height: 40vh;
+          text-align: center;
+      }
+    </style>
+
+    <script type="text/javascript">
+        setTimeout(function() {
+            window.location.href = '/servermonitor/{{ hostname }}';
+        }, 1500);
+    </script>
+</head>
+<body>
+
+    <div>
+        <h2 style="text-align: center;">Server: cloudserver1</h2>
+
+        <div id="chartContainer" style="display: inline-block;">
+            <h3>Temperature</h3>
+            <canvas id="tempChart"></canvas>
+        </div>
+        
+        <div id="chartContainer" style="display: inline-block;">
+            <h3>CPU / Memory</h3>
+            <canvas id="cpumChart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        var ctx1 = document.getElementById('tempChart').getContext('2d');
+        var ctx2 = document.getElementById('cpumChart').getContext('2d');
+
+        var avarageValue1 = {{ aTempValue }};
+
+        let maxList = [];
+        let minList = [];
+
+        let listWithCords = [];
+        let avarageValueList1 = [];
+
+        for (var i = 30; i > 0; i--){
+            listWithCords.push(i);
+            avarageValueList1.push(avarageValue1);
+            maxList.push(100);
+            minList.push(0);
+        }
+
+        var data1 = {
+          labels: listWithCords,
+          datasets: [
+            {
+              label: 'Value',
+              backgroundColor: 'rgba(0, 123, 255, 0.5)',
+              borderColor: 'rgba(0, 123, 255, 1)',
+              data: {{ tempData }}
+            },
+            {
+              label: 'Average value',
+              data: avarageValueList1,
+              borderColor: 'rgb(0, 255, 0)',
+              backgroundColor: 'transparent',
+            },
+            {
+              label: 'Min value',
+              data: minList,
+              borderColor: 'red',
+              backgroundColor: 'transparent',
+            },
+            {
+              label: 'Max value',
+              data: maxList,
+              borderColor: 'red',
+              backgroundColor: 'transparent',
+            }
+          ]
+        };
+
+        var data2 = {
+          labels: listWithCords,
+          datasets: [
+            {
+              label: 'CPU',
+              backgroundColor: 'rgba(0, 123, 255, 0.5)',
+              borderColor: 'rgba(0, 123, 255, 1)',
+              data: {{ cpuData }}
+            },
+            {
+              label: 'Memory',
+              backgroundColor: 'rgba(0, 123, 255, 0.5)',
+              borderColor: 'rgba(100, 50, 255, 1)',
+              data: {{ memoryData }}
+            },
+            {
+              label: 'Min value',
+              data: minList,
+              borderColor: 'red',
+              backgroundColor: 'transparent',
+            },
+            {
+              label: 'Max value',
+              data: maxList,
+              borderColor: 'red',
+              backgroundColor: 'transparent',
+            }
+          ]
+        };
+
+        var chart1 = new Chart(ctx1, {
+          type: 'line',
+          data: data1,
+          options: {
+                animation: {
+                  duration: 0
+                },
+              responsive: true,
+              maintainAspectRatio: false
+          }
+        });
+
+        var chart2 = new Chart(ctx2, {
+          type: 'line',
+          data: data2,
+          options: {
+                animation: {
+                  duration: 0
+                },
+                responsive: true,
+                maintainAspectRatio: false
+          }
+        });
+      });
+    </script>
+</body>
+</html>

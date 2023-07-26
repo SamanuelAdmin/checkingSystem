@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Server`s monitor</title>
+    <style>
+      #chartContainer {
+          width: 25vw;
+          height: 25vh;
+          text-align: center;
+      }
+    </style>
+
+    <script type="text/javascript">
+        setTimeout(function() {
+            window.location.href = '/';
+        }, 2500);
+    </script>
+</head>
+<body>
+    <div id="chartContainer">
+        <h3>Server`s response time</h3>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var avarageValue = {{ aValue }};
+
+        let listWithCords = [];
+        let avarageValueList = [];
+        for (var i = 30; i > 0; i--){ listWithCords.push(i); avarageValueList.push(avarageValue); }
+
+        var data = {
+          labels: listWithCords,
+          datasets: [
+            {
+              label: 'Value',
+              backgroundColor: 'rgba(0, 123, 255, 0.5)',
+              borderColor: 'rgba(0, 123, 255, 1)',
+              data: {{ pingData }}
+            },
+            {
+              label: 'Average value',
+              data: avarageValueList,
+              borderColor: 'green',
+              backgroundColor: 'transparent',
+            }
+          ]
+        };
+
+        var chart = new Chart(ctx, {
+          type: 'line',
+          data: data,
+          options: {
+              animation: {
+                duration: 0
+              },
+              responsive: true,
+              maintainAspectRatio: false
+          }
+        });
+      });
+    </script>
+
+    <br>
+    <br>
